@@ -123,6 +123,7 @@ public class PacientUpdateProfileActivity extends AppCompatActivity {
                 displayDateOfBirth.setText(date);
             }
         };
+
         spinnerAfectiuni.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -138,6 +139,7 @@ public class PacientUpdateProfileActivity extends AppCompatActivity {
 
             }
         });
+
     }
 
     private boolean checkCNP(String text) {
@@ -179,27 +181,7 @@ public class PacientUpdateProfileActivity extends AppCompatActivity {
     private void retrieveUserData() {
         //TODO
     }
-    private void RetrieveUserProfileImage() {
 
-        RootRef.child("Users").child("Pacienti").child(currentUserID)
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if (!Objects.requireNonNull(dataSnapshot.child("image").exists())) {
-                            //imageLink = "https://firebasestorage.googleapis.com/v0/b/hschedule-30bca.appspot.com/o/Profile%20Images%2Fprofile_image.png?alt=media&token=fc0afa96-adf8-482e-9f06-31fa75aed377";
-                        } else {
-                            imageLink = Objects.requireNonNull(dataSnapshot.child("image").getValue()).toString();
-                            Picasso.get().load(imageLink).placeholder(R.drawable.profile_image).into(profileImage);
-                            System.out.println(imageLink + " imagine");
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
-    }
     private boolean checkStrings(String text) {
         for (char c : text.toCharArray()) {
             if (Character.isDigit(c)) {
@@ -227,9 +209,13 @@ public class PacientUpdateProfileActivity extends AppCompatActivity {
         String adresa = adresaUser.getText().toString();
         String cnp = cnpUser.getText().toString();
         String numarTelefon = numarTelefonUser.getText().toString();
-        String ocupatie = ocupatieUser.getText().toString();
+        String specializare = ocupatieUser.getText().toString();
         boolean ok = true;
 
+        if(imageLink == null){
+            ok = false;
+            Toast.makeText(this, "Trebuie sa introduceti o imagine de profil!", Toast.LENGTH_LONG).show();
+        }
         if (nume.isEmpty()) {
             numeFamilie.setError("Va rog introduceti un nume de familie!");
             ok = false;
@@ -256,18 +242,14 @@ public class PacientUpdateProfileActivity extends AppCompatActivity {
             numarTelefonUser.setError("Va rof introduceti numai cifre !");
             ok = false;
         }
-        if (ocupatie.isEmpty()) {
+        if (specializare.isEmpty()) {
             ocupatieUser.setError("Va rog alegeti una din afectiunile disponibile!");
             ok = false;
-        } else if (!checkStrings(ocupatie)) {
-            numeFamilie.setError("Va rog introduceti numai carcatere in ocupatie!");
+        } else if (!checkStrings(specializare)) {
+            numeFamilie.setError("Va rog introduceti numai carcatere in specializare!");
             ok = false;
         }
         String defaultSpinnerValue = "Alegeti una din optiunile de mai jos";
-        if (spinnerValue.equals(defaultSpinnerValue)) {
-            Toast.makeText(this, "Va rog alegeti una dintre afectiunile specificate!", Toast.LENGTH_LONG).show();
-            ok = false;
-        }
         if (cnp.isEmpty()) {
             cnpUser.setError("Va rog introduceti un cnp");
             ok = false;
@@ -292,50 +274,58 @@ public class PacientUpdateProfileActivity extends AppCompatActivity {
     }
     private void UpdateUserSettings() {
 
-            HashMap<String, Object> profileMap = new HashMap<>();
-            profileMap.put("Nume", numeFamilie.getText().toString());
-            profileMap.put("Prenume", prenumeUser.getText().toString());
-            profileMap.put("Afectiune", spinnerValue);
-            RootRef.child("Users").child("Pacienti").child(currentUserID).child("New Account?").setValue("old");
-            RootRef.child("Users").child("Pacienti").child(currentUserID).updateChildren(profileMap)
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
+        final HashMap<String, Object> profilePacient = new HashMap<>();
+        profilePacient.put("Nume", numeFamilie.getText().toString());
+        profilePacient.put("Prenume", prenumeUser.getText().toString());
+        profilePacient.put("Afectiune", spinnerValue);
+        profilePacient.put("userID",currentUserID);
 
-                            HashMap<String, Object> profileMap = new HashMap<>();
+        RootRef.child("Users").child("Pacienti").child(currentUserID).child("New Account?").setValue("old");
+        RootRef.child("Users").child("Pacienti").child(currentUserID).updateChildren(profilePacient)
 
-                            profileMap.put("Nume", numeFamilie.getText().toString());
-                            profileMap.put("Prenume", prenumeUser.getText().toString());
-                            profileMap.put("Afectiune", spinnerValue);
-                            profileMap.put("Adresa", adresaUser.getText().toString());
-                            profileMap.put("CNP", cnpUser.getText().toString());
-                            profileMap.put("Numar Telefon", numarTelefonUser.getText().toString());
-                            profileMap.put("Ocupatie", ocupatieUser.getText().toString());
-                            profileMap.put("Sex", sex);
-                            profileMap.put("Varsta", age);
-                            profileMap.put("Casatorit?", casatorit);
-                            RootRef.child("Users").child("Pacienti").child(currentUserID).child("New Account?").setValue("old");
-                            RootRef.child("Users").child("Pacienti").child(currentUserID).updateChildren(profileMap).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    SendUserToMainActivity();
-                                }
-                            });
-                        }
-                    });
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        RootRef.child("Users").child("Pacienti").child(currentUserID).child("New Account?").setValue(null);
+                        HashMap<String, Object> profileMap = new HashMap<>();
+                        profileMap.put("Nume", numeFamilie.getText().toString());
+                        profileMap.put("Prenume", prenumeUser.getText().toString());
+                        profileMap.put("Afectiune", spinnerValue);
+                        profileMap.put("Sex", sex);
+                        profileMap.put("Varsta", age);
+                        profileMap.put("Casatorit?", casatorit);
+                        profileMap.put("Adresa", adresaUser.getText().toString());
+                        profileMap.put("CNP", cnpUser.getText().toString());
+                        profileMap.put("Numar Telefon", numarTelefonUser.getText().toString());
+                        profileMap.put("Ocupatie",ocupatieUser.getText().toString());
+
+                        RootRef.child("Users").child(currentUserID).child("New Account?").setValue("old");
+                        RootRef.child("Users").child(currentUserID).updateChildren(profileMap)
+
+                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        SendUserToMainActivity();
+                                    }
+                                });
+                    }
+                });
+
     }
 
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void initializeVariables() {
 
-        numeFamilie = findViewById(R.id.nume_familie);
-        prenumeUser = findViewById(R.id.prenume);
-        adresaUser = findViewById(R.id.adresa);
-        cnpUser = findViewById(R.id.cnp);
-        numarTelefonUser = findViewById(R.id.telefon);
-        ocupatieUser = findViewById(R.id.ocupatie);
-        profileImage = findViewById(R.id.set_profile_image);
+
+
+        numeFamilie = findViewById(R.id.nume_familie_pacient);
+        prenumeUser = findViewById(R.id.prenume_pacient);
+        adresaUser = findViewById(R.id.adresa_pacient);
+        cnpUser = findViewById(R.id.cnp_pacient);
+        numarTelefonUser = findViewById(R.id.telefon_pacient);
+        ocupatieUser = findViewById(R.id.ocupatie_pacient);
+        profileImage = findViewById(R.id.set_profile_image_pacient);
         updateProfile = findViewById(R.id.update);
         sexF = findViewById(R.id.femeie);
         sexM = findViewById(R.id.barbat);
@@ -353,8 +343,30 @@ public class PacientUpdateProfileActivity extends AppCompatActivity {
                 android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.afectiuni));
         stringArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerAfectiuni.setAdapter(stringArrayAdapter);
+
     }
 
+
+    private void RetrieveUserProfileImage() {
+
+        RootRef.child("Users").child("Pacienti").child(currentUserID)
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if (!Objects.requireNonNull(dataSnapshot.child("image").exists())) {
+                            //imageLink = "https://firebasestorage.googleapis.com/v0/b/hschedule-30bca.appspot.com/o/Profile%20Images%2Fprofile_image.png?alt=media&token=fc0afa96-adf8-482e-9f06-31fa75aed377";
+                        } else {
+                            imageLink = Objects.requireNonNull(dataSnapshot.child("image").getValue()).toString();
+                            Picasso.get().load(imageLink).placeholder(R.drawable.profile_image).into(profileImage);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) { // In partea aceasta de cod se executa partea de preluare a imaginii din memoria locala a telefonului
 
@@ -398,8 +410,8 @@ public class PacientUpdateProfileActivity extends AppCompatActivity {
                                                     if (task.isSuccessful()) {
 
                                                         Toast.makeText(PacientUpdateProfileActivity.this, "Image saved in database succesfully", Toast.LENGTH_SHORT).show();
-                                                        // Daca totul e ok primesti un mesaj ca a fost incarcata
                                                         loadingBar.dismiss();
+                                                        // Daca totul e ok primesti un mesaj ca a fost incarcata
 
                                                     } else {
 

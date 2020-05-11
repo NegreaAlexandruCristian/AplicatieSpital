@@ -1,17 +1,22 @@
 package com.example.hscheduler;
 
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TimePicker;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -21,13 +26,13 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener {
 
     private DatabaseReference reference;
     private RecyclerView recyclerView;
     private ArrayList<Doctor> list;
     private DoctorAdapter adapter;
-    private String doctor ,currentUserID;
+    private String doctor ,currentUserID,date;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +67,18 @@ public class MainActivity extends AppCompatActivity {
 
                         }
                     });
+
+                    Intent incomingIntent = getIntent();
+                    date = incomingIntent.getStringExtra("date");
+
+                    if(date != null) {
+
+                        DialogFragment dialogFragment = new TimePickerFragment();
+                        dialogFragment.show(getSupportFragmentManager(), "time picker");
+                    }
+
+                    System.out.println("AICI : " + date);
+
                 } else {
 
                     Intent intent = new Intent(getBaseContext(),DoctorProfileActivity.class);
@@ -75,6 +92,13 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+    }
+
+    @Override
+    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+
+        Toast.makeText(this, "TIME : " + hourOfDay + " " + minute, Toast.LENGTH_SHORT).show();
     }
 
     private void InitializeVariables() {
@@ -86,6 +110,8 @@ public class MainActivity extends AppCompatActivity {
         list = new ArrayList<Doctor>();
 
         reference = FirebaseDatabase.getInstance().getReference();
+
+        date = null;
     }
 
     @Override

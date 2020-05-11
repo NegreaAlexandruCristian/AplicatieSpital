@@ -1,28 +1,23 @@
 package com.example.hscheduler;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RatingBar;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
-
-import org.w3c.dom.Text;
 
 import java.util.Objects;
 
@@ -56,7 +51,7 @@ public class DoctorProfileActivity extends AppCompatActivity {
                 specializare.setText((String) dataSnapshot.child("Specializare").getValue());
                 varsta.setText(Objects.requireNonNull(Objects.requireNonNull(dataSnapshot.child("Varsta").getValue()).toString()));
                 ratingDisplayTextView.setText(Objects.requireNonNull(dataSnapshot.child("Rating").getValue()).toString());
-                studiiDoctor.setText(dataSnapshot.child("Studii").getValue().toString());
+                studiiDoctor.setText(Objects.requireNonNull(dataSnapshot.child("Studii").getValue()).toString());
 
                 databaseReference.child("Users").child("Doctors").child(currentUserId).child("image").addValueEventListener(new ValueEventListener() {
 
@@ -73,32 +68,56 @@ public class DoctorProfileActivity extends AppCompatActivity {
                     }
                 });
 
+                if (Objects.requireNonNull(dataSnapshot.child("Doctor").getValue()).toString().compareTo("yes") == 0) {
+                    System.out.println("AICI : " + dataSnapshot.getKey());
 
-                submitButton.setOnClickListener(new View.OnClickListener() {
-                    @SuppressLint("SetTextI18n")
-                    @Override
-                    public void onClick(View v) {
+                    updateButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
 
-                        String variabila = (String) dataSnapshot.child("Rating").getValue().toString();
-                        assert variabila != null;
-                        if(variabila.equals("0.0")){
-
-                            float overallRating = (Float) Float.parseFloat(variabila);
-                            rating = ratingBar.getRating();
-                            rating = (float) ((overallRating + rating));
-                            ratingDisplayTextView.setText("Overall Rating is : " + rating);
-                        } else {
-
-                            float overallRating = (Float) Float.parseFloat(variabila);
-                            rating = ratingBar.getRating();
-                            rating = (float) ((overallRating + rating)/(2.0));
-                            ratingDisplayTextView.setText("Overall Rating is : " + rating);
+                            String textStudii = studiiDoctor.getText().toString();
+                            databaseReference.child("Users").child(currentUserId).child("Studii").setValue(textStudii);
                         }
+                    });
 
-                        databaseReference.child("Users").child(currentUserId).child("Rating").setValue(Float.toString(rating));
-                    }
-                });
+                    ratingBar.setEnabled(false);
+                    ratingBar.setVisibility(View.GONE);
+                    submitButton.setEnabled(false);
+                    submitButton.setVisibility(View.GONE);
+                    ratingDisplayTextView.setEnabled(false);
+                    ratingDisplayTextView.setVisibility(View.GONE);
 
+                } else {
+
+                    submitButton.setOnClickListener(new View.OnClickListener() {
+                        @SuppressLint("SetTextI18n")
+                        @Override
+                        public void onClick(View v) {
+
+                            String variabila = (String) Objects.requireNonNull(dataSnapshot.child("Rating").getValue()).toString();
+                            if (variabila.equals("0.0")) {
+
+                                float overallRating = (Float) Float.parseFloat(variabila);
+                                rating = ratingBar.getRating();
+                                rating = (float) ((overallRating + rating));
+                                ratingDisplayTextView.setText("Overall Rating is : " + rating);
+                            } else {
+
+                                float overallRating = (Float) Float.parseFloat(variabila);
+                                rating = ratingBar.getRating();
+                                rating = (float) ((overallRating + rating) / (2.0));
+                                ratingDisplayTextView.setText("Overall Rating is : " + rating);
+                            }
+
+                            databaseReference.child("Users").child(currentUserId).child("Rating").setValue(Float.toString(rating));
+                        }
+                    });
+
+                    studiiDoctor.setEnabled(false);
+                    studiiDoctor.setInputType(InputType.TYPE_NULL);
+                    updateButton.setEnabled(false);
+                    updateButton.setVisibility(View.GONE);
+                }
             }
 
             @Override
@@ -106,15 +125,6 @@ public class DoctorProfileActivity extends AppCompatActivity {
 
             }
         });
-
-       updateButton.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View v) {
-
-               String textStudii = studiiDoctor.getText().toString();
-               databaseReference.child("Users").child(currentUserId).child("Studii").setValue(textStudii);
-           }
-       });
     }
 
     @SuppressLint("CutPasteId")
@@ -122,7 +132,6 @@ public class DoctorProfileActivity extends AppCompatActivity {
 
         ratingBar = findViewById(R.id.rating_bar);
         submitButton = findViewById(R.id.submit_button);
-        ratingDisplayText = findViewById(R.id.rating_display_text_View);
         numeFamilie = findViewById(R.id.nume_familie);
         prenume = findViewById(R.id.prenume);
         studiiDoctor = findViewById(R.id.studii_doctor);

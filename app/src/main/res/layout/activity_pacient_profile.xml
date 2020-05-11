@@ -18,7 +18,7 @@
             android:background="@color/colorPrimary"
             >
             <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/set_profile_image"
+                android:id="@+id/set_profile_image_pacient"
                 android:layout_width="200dp"
                 android:layout_height="120dp"
                 android:layout_alignParentTop="true"
@@ -27,19 +27,10 @@
                 android:src="@drawable/profile_image"
                 android:layout_margin="5dp"
                 app:civ_border_color="@color/colorPrimary"/>
-<!--            <ImageView-->
-<!--                android:layout_width="120dp"-->
-<!--                android:layout_height="120dp"-->
-<!--                android:layout_margin="5dp"-->
-<!--                android:background="@color/colorPrimary"-->
-<!--                android:adjustViewBounds="true"-->
-<!--                android:layout_centerInParent="true"-->
-<!--                android:src="@drawable/profile_image"-->
-<!--                android:scaleType="centerInside">-->
-<!--            </ImageView>-->
+
         </RelativeLayout>
             <EditText
-                android:id="@+id/nume_familie"
+                android:id="@+id/nume_familie_pacient"
                 android:layout_width="300dp"
                 android:layout_height="40dp"
                 android:layout_marginTop="150dp"
@@ -50,7 +41,7 @@
                 android:drawableStart="@drawable/nume">
             </EditText>
             <EditText
-                android:id="@+id/prenume"
+                android:id="@+id/prenume_pacient"
                 android:layout_width="300dp"
                 android:layout_height="40dp"
                 android:layout_marginTop="10dp"
@@ -58,16 +49,16 @@
                 android:drawableLeft="@drawable/prenume"
                 android:background="@drawable/button_round"
                 android:hint="@string/prenumele_dumneavoastra"
-                android:layout_below="@+id/nume_familie"
+                android:layout_below="@+id/nume_familie_pacient"
                 android:drawableStart="@drawable/prenume">
             </EditText>
             <EditText
-                android:id="@+id/adresa"
+                android:id="@+id/adresa_pacient"
                 android:layout_width="300dp"
                 android:layout_height="40dp"
                 android:layout_marginTop="10dp"
                 android:layout_centerHorizontal="true"
-                android:layout_below="@+id/prenume"
+                android:layout_below="@+id/prenume_pacient"
                 android:background="@drawable/button_round"
                 android:drawableLeft="@drawable/adresa"
                 android:drawableStart="@drawable/adresa"
@@ -75,10 +66,10 @@
                 >
             </EditText>
             <EditText
-                android:id="@+id/cnp"
+                android:id="@+id/cnp_pacient"
                 android:layout_width="300dp"
                 android:layout_height="40dp"
-                android:layout_below="@+id/adresa"
+                android:layout_below="@+id/adresa_pacient"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/button_round"
@@ -87,10 +78,10 @@
                 android:drawableStart="@drawable/cnp">
             </EditText>
             <EditText
-                android:id="@+id/telefon"
+                android:id="@+id/telefon_pacient"
                 android:layout_width="300dp"
                 android:layout_height="40dp"
-                android:layout_below="@+id/cnp"
+                android:layout_below="@+id/cnp_pacient"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/button_round"
@@ -98,10 +89,10 @@
                 android:hint="@string/numarul_de_telefon"
                 android:drawableStart="@drawable/phone" />
             <EditText
-                android:id="@+id/ocupatie"
+                android:id="@+id/ocupatie_pacient"
                 android:layout_width="300dp"
                 android:layout_height="40dp"
-                android:layout_below="@+id/telefon"
+                android:layout_below="@+id/telefon_pacient"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/button_round"
@@ -112,7 +103,7 @@
                 android:id="@+id/barbat"
                 android:layout_width="100dp"
                 android:layout_height="40dp"
-                android:layout_below="@+id/ocupatie"
+                android:layout_below="@+id/ocupatie_pacient"
                 android:layout_centerHorizontal="true"
                 android:text="@string/barbat"
                 android:layout_toLeftOf="@+id/femeie"
@@ -125,12 +116,12 @@
                 android:id="@+id/femeie"
                 android:layout_width="100dp"
                 android:layout_height="40dp"
-                android:layout_below="@+id/ocupatie"
+                android:layout_below="@+id/ocupatie_pacient"
                 android:layout_centerHorizontal="true"
-                android:layout_alignRight="@+id/ocupatie"
+                android:layout_alignRight="@+id/ocupatie_pacient"
                 android:layout_marginRight="80dp"
                 android:text="@string/femeie"
-                android:layout_alignEnd="@+id/ocupatie"
+                android:layout_alignEnd="@+id/ocupatie_pacient"
                 android:layout_marginEnd="80dp">
             </CheckBox>
 
@@ -139,7 +130,7 @@
                 android:layout_width="30dp"
                 android:layout_height="40dp"
                 android:layout_marginTop="10dp"
-                android:layout_below="@+id/ocupatie"
+                android:layout_below="@+id/ocupatie_pacient"
                 android:layout_marginLeft="35dp"
                 android:hint="@string/sex"
                 android:textStyle="bold"

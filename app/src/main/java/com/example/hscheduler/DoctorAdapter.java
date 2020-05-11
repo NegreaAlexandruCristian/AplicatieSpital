@@ -6,7 +6,9 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,6 +17,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -26,7 +29,6 @@ public class DoctorAdapter extends RecyclerView.Adapter<DoctorAdapter.DoctorView
     private FirebaseAuth mAuth ;
     private String currentUserID;
 
-
     DoctorAdapter(Context context, ArrayList<Doctor> doctors){
         this.context = context;
         this.doctorArrayList = doctors;
@@ -37,8 +39,10 @@ public class DoctorAdapter extends RecyclerView.Adapter<DoctorAdapter.DoctorView
     public DoctorViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         mAuth = FirebaseAuth.getInstance();
         currentUserID = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
-        return new DoctorViewHolder(LayoutInflater.from(context).inflate(R.layout.doctor_item, parent, false));
+        DoctorViewHolder view = new DoctorViewHolder(LayoutInflater.from(context).inflate(R.layout.doctor_item, parent, false));
+        return view;
     }
+
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -49,6 +53,14 @@ public class DoctorAdapter extends RecyclerView.Adapter<DoctorAdapter.DoctorView
         currentUserID = doctorArrayList.get(position).getUserID();
         Picasso.get().load(doctorArrayList.get(position).getImage()).into(holder.profileImage);
 
+        holder.appointment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                SendUserToCalendarActivity();
+            }
+        });
+
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -56,6 +68,12 @@ public class DoctorAdapter extends RecyclerView.Adapter<DoctorAdapter.DoctorView
                 SendUserToDoctorProfile();
             }
         });
+    }
+
+    private void SendUserToCalendarActivity() {
+
+        Intent intent = new Intent(context, CalendarActivity.class);
+        context.startActivity(intent);
     }
 
     private void SendUserToDoctorProfile(){
@@ -71,14 +89,16 @@ public class DoctorAdapter extends RecyclerView.Adapter<DoctorAdapter.DoctorView
 
     static class DoctorViewHolder extends RecyclerView.ViewHolder {
 
-        TextView username,specializare;
-        CircleImageView profileImage;
+        private TextView username,specializare;
+        private CircleImageView profileImage;
+        private Button appointment;
 
         private DoctorViewHolder(View itemView){
             super(itemView);
             username = itemView.findViewById(R.id.username);
             specializare = itemView.findViewById(R.id.specializare);
             profileImage = itemView.findViewById(R.id.profile_image);
+            appointment = itemView.findViewById(R.id.appointment);
         }
     }
 }
