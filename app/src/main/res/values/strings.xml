@@ -1,0 +1,50 @@
+<resources>
+    <string name="app_name">HScheduler</string>
+    <string name="email">Email-ul dumneavoastra</string>
+    <string name="password">Parola dumneavoastra</string>
+    <string name="register">Inregistrare</string>
+    <string name="numar_gresit">Numar telefon gresit</string>
+    <string name="verificare_cod">Verificare cod</string>
+    <string name="trimite_codul">Trimite codul</string>
+    <string name="codul_de_verificare">Codul de verificare</string>
+    <string name="numarul_de_telefon">Numarul de telefon..</string>
+    <string name="checkbox">Femeie</string>
+    <string name="barbat">Barbat</string>
+    <string name="nume">Nume</string>
+    <string name="prenume">Prenume</string>
+    <string name="adresa">Adresa</string>
+    <string name="sex">Sex</string>
+    <string name="todo">Todo</string>
+    <string name="numele_de_familie">Numele de familie..</string>
+    <string name="prenumele_dumneavoastra">Prenumele dumneavoastra..</string>
+    <string name="adresa_dumneavoastra">Adresa dumneavoastra..</string>
+    <string name="cnp">CNP</string>
+    <string name="femeie">Femeie</string>
+    <string name="ocupatia_dumneavoastra">Ocupatia dumneavoastra..</string>
+    <string name="casatorit">Casatorit?</string>
+    <string name="update_profile">Update Profile</string>
+    <string name="selectati_data_de_nastere">Selectati data de nastere!</string>
+    <string name="delogare">Delogare</string>
+    <string name="specializarea_dumneavoastra">Specializarea dumneavoastra..</string>
+    <string name="doctor">Doctor?</string>
+    <string name="email_doctor">Email Doctor</string>
+    <string name="varsta_doctor">Varsta Doctor</string>
+    <string name="studii_doctor">Studii Doctor</string>
+    <string name="numar_doctor">Numar Doctor</string>
+    <string name="specializare_doctor">Specializare Doctor</string>
+    <string name="nume_doctor">Nume Doctor</string>
+    <string name="profile_image">Imagine Profil</string>
+    <string-array name="afectiuni">
+        <item>Alegeti una din optiunile de mai jos</item>
+        <item>Fractiuni</item>
+        <item>Dereglari hormonale</item>
+        <item>Hipertiroidism</item>
+        <item>Hipotiroidism</item>
+        <item>Boala Addison</item>
+        <item>Boala Cushing</item>
+        <item>Nanism hipofizar</item>
+    </string-array>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

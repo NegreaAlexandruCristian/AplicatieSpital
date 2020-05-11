@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "469852175706",
+    "firebase_url": "https://hschedulerproject.firebaseio.com",
+    "project_id": "hschedulerproject",
+    "storage_bucket": "hschedulerproject.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:469852175706:android:31cdcc8d9cbc3f890c8763",
+        "android_client_info": {
+          "package_name": "com.example.hscheduler"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "469852175706-e5mthr6ceg8in1e7l0eo80e27gh8nir6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAgAz40GUpe2Shizng51epZk1kaVXHKqck"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "469852175706-e5mthr6ceg8in1e7l0eo80e27gh8nir6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
