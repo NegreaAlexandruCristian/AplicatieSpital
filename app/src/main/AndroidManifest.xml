@@ -14,7 +14,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".CalendarActivity"></activity>
-        <activity android:name=".DoctorProfileActivity" />
+        <activity android:name=".DoctorProfileActivity"
+            android:parentActivityName=".MainActivity"
+            />
         <activity
             android:name=".PhoneLoginActivity"
             android:parentActivityName=".LoginActivity" />

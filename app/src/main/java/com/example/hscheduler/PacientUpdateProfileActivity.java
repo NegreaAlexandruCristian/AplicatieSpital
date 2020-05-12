@@ -279,8 +279,8 @@ public class PacientUpdateProfileActivity extends AppCompatActivity {
         profilePacient.put("Prenume", prenumeUser.getText().toString());
         profilePacient.put("Afectiune", spinnerValue);
         profilePacient.put("userID",currentUserID);
-        profilePacient.put("Time Appointment","");
-        profilePacient.put("Date Appointment","");
+        profilePacient.put("DateAppointment","");
+        profilePacient.put("TimeAppointment","");
 
         RootRef.child("Users").child("Pacienti").child(currentUserID).child("New Account?").setValue("old");
         RootRef.child("Users").child("Pacienti").child(currentUserID).updateChildren(profilePacient)

@@ -1,12 +1,9 @@
 package com.example.hscheduler;
 
-import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TimePicker;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -43,7 +40,6 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 doctor = Objects.requireNonNull(dataSnapshot.child("Doctor").getValue()).toString();
-                System.out.println("DAAAA : " + doctor);
                 if(doctor.compareTo("no")==0) {
                     reference.child("Users").child("Doctors").addValueEventListener(new ValueEventListener() {
                         @Override
@@ -52,7 +48,6 @@ public class MainActivity extends AppCompatActivity {
 
                                 Doctor doctor = snapshot.getValue(Doctor.class);
                                 System.out.println(doctor);
-                                System.out.println("AICI --------------------------------------------------------");
                                 list.add(doctor);
                             }
                             adapter = new DoctorAdapter(MainActivity.this, list,currentUserID);

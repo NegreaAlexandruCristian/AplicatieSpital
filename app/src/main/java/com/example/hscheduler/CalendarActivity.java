@@ -25,11 +25,11 @@ public class CalendarActivity extends AppCompatActivity {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
 
-                String date = (dayOfMonth + 1) + "/" + month + "/" + year;
+                String date = (dayOfMonth - 1) + "/" + month + "/" + year;
 
                 System.out.println("Calendar Activity " + date);
 
-                Intent intent = new Intent(getBaseContext(),DoctorProfileActivity.class);
+                Intent intent = new Intent(CalendarActivity.this,DoctorProfileActivity.class);
                 intent.putExtra("date",date);
                 intent.putExtra("ID",doctorID);
                 intent.putExtra("USER ID",pacientID);

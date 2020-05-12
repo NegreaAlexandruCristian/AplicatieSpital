@@ -37,15 +37,17 @@ public class DoctorProfileActivity extends AppCompatActivity implements TimePick
     private RatingBar ratingBar;
     private DatabaseReference databaseReference;
     private float rating;
-    private String currentUserId,pacientID,date;
+    private String doctorUserID,pacientID;
+    private String date;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_doctor_profile);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         InitializeVariables();
-        databaseReference.child("Users").child(currentUserId).addValueEventListener(new ValueEventListener() {
+        databaseReference.child("Users").child(doctorUserID).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull final DataSnapshot dataSnapshot) {
 
@@ -57,12 +59,11 @@ public class DoctorProfileActivity extends AppCompatActivity implements TimePick
                 ratingDisplayTextView.setText(Objects.requireNonNull(dataSnapshot.child("Rating").getValue()).toString());
                 studiiDoctor.setText(Objects.requireNonNull(dataSnapshot.child("Studii").getValue()).toString());
 
-                databaseReference.child("Users").child("Doctors").child(currentUserId).child("image").addValueEventListener(new ValueEventListener() {
+                databaseReference.child("Users").child("Doctors").child(doctorUserID).child("image").addValueEventListener(new ValueEventListener() {
 
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         String imageLink = Objects.requireNonNull(dataSnapshot.getValue()).toString();
-                        System.out.println(imageLink);
                         Picasso.get().load(imageLink).into(profileImage);
                     }
 
@@ -91,8 +92,6 @@ public class DoctorProfileActivity extends AppCompatActivity implements TimePick
                             updateButton.setEnabled(false);
                             updateButton.setVisibility(View.GONE);
 
-                            System.out.println("DAAAAA");
-
                         }
                     }
 
@@ -107,9 +106,12 @@ public class DoctorProfileActivity extends AppCompatActivity implements TimePick
                     public void onClick(View v) {
 
                         String textStudii = studiiDoctor.getText().toString();
-                        databaseReference.child("Users").child(currentUserId).child("Studii").setValue(textStudii);
+                        databaseReference.child("Users").child(doctorUserID).child("Studii").setValue(textStudii);
                     }
                 });
+
+                Intent incomingIntent = getIntent();
+                date = (String) incomingIntent.getStringExtra("date");
 
                 appointment.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -139,7 +141,7 @@ public class DoctorProfileActivity extends AppCompatActivity implements TimePick
                             ratingDisplayTextView.setText("Overall Rating is : " + rating);
                         }
 
-                        databaseReference.child("Users").child(currentUserId).child("Rating").setValue(Float.toString(rating));
+                        databaseReference.child("Users").child(doctorUserID).child("Rating").setValue(Float.toString(rating));
                     }
                 });
             }
@@ -154,8 +156,8 @@ public class DoctorProfileActivity extends AppCompatActivity implements TimePick
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                if((dataSnapshot.child("Time Appointment").getValue().toString().compareTo("") == 0)
-                && dataSnapshot.child("Date Appointment").getValue().toString().compareTo("") == 0){
+                if((Objects.requireNonNull(dataSnapshot.child("TimeAppointment").getValue()).toString().compareTo("") == 0)
+                && Objects.requireNonNull(dataSnapshot.child("DateAppointment").getValue()).toString().compareTo("") == 0){
                     GetDateAndTime();
                 } else {
 
@@ -170,15 +172,65 @@ public class DoctorProfileActivity extends AppCompatActivity implements TimePick
         });
     }
 
-    private void InsertInDataBase(int hourOfDay, int minute) {
+    private void checkDatabaseAppointment(final int hourOfDay, final int minute, final String date){
 
-        databaseReference.child("Users").child("Pacienti").child(pacientID).child("Time Appointment").setValue(hourOfDay + ":" + minute);
-        databaseReference.child("Users").child("Pacienti").child(pacientID).child("Date Appointment").setValue(date);
+        databaseReference.child("Users").child("Doctors").child(doctorUserID).addValueEventListener(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                if(dataSnapshot.hasChild("Pacienti Inregistrati")) {
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+
+                        Appointment appointment = snapshot.child("Pacienti Inregistrati").getValue(Appointment.class);
+                        System.out.println("DAAAAAAAAA " + appointment);
+                        assert appointment != null;
+
+                        String dataUser = appointment.getDateAppointment();
+
+                        if (dataUser.compareTo(date) == 0) {
+                            Toast.makeText(DoctorProfileActivity.this, "Alegeti va rog o alta data!", Toast.LENGTH_SHORT).show();
+                            break;
+
+                        } else {
+
+                            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+
+                            databaseReference.child("Users").child("Pacienti").child(pacientID).child("TimeAppointment").setValue(hourOfDay + ":" + minute);
+                            databaseReference.child("Users").child("Pacienti").child(pacientID).child("DateAppointment").setValue(date);
+
+                            databaseReference.child("Users").child("Doctors").child(doctorUserID).child("Pacienti Inregistrati").child(pacientID).child("DateAppointment").setValue(date);
+                            databaseReference.child("Users").child("Doctors").child(doctorUserID).child("Pacienti Inregistrati").child(pacientID).child("TimeAppointment").setValue(hourOfDay + ":" + minute);
+
+                        }
+                    }
+                } else {
+
+                    DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+
+                    databaseReference.child("Users").child("Pacienti").child(pacientID).child("TimeAppointment").setValue(hourOfDay + ":" + minute);
+                    databaseReference.child("Users").child("Pacienti").child(pacientID).child("DateAppointment").setValue(date);
+
+                    databaseReference.child("Users").child("Doctors").child(doctorUserID).child("Pacienti Inregistrati").child(pacientID).child("DateAppointment").setValue(date);
+                    databaseReference.child("Users").child("Doctors").child(doctorUserID).child("Pacienti Inregistrati").child(pacientID).child("TimeAppointment").setValue(hourOfDay + ":" + minute);
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void InsertInDataBase(int hourOfDay, int minute,String date) {
+
+        checkDatabaseAppointment(hourOfDay,minute,date);
+
     }
 
     private void GetDateAndTime() {
-
-        date = (String) getIntent().getSerializableExtra("date");
 
         if(date != null) {
 
@@ -191,14 +243,13 @@ public class DoctorProfileActivity extends AppCompatActivity implements TimePick
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
 
-        Toast.makeText(this, "TIME : " + hourOfDay + " " + minute, Toast.LENGTH_SHORT).show();
-        InsertInDataBase(hourOfDay,minute);
+        InsertInDataBase(hourOfDay,minute,date);
     }
 
     private void SendUserToCalendarActivity() {
 
         Intent intent = new Intent(getBaseContext(), CalendarActivity.class);
-        intent.putExtra("Doctor ID",currentUserId);
+        intent.putExtra("Doctor ID",doctorUserID);
         intent.putExtra("Pacient ID",pacientID);
         startActivity(intent);
     }
@@ -218,7 +269,7 @@ public class DoctorProfileActivity extends AppCompatActivity implements TimePick
         profileImage = findViewById(R.id.set_profile_image);
         updateButton = findViewById(R.id.update);
 
-        currentUserId = (String) getIntent().getSerializableExtra("ID");
+        doctorUserID = (String) getIntent().getSerializableExtra("ID");
         pacientID = (String) getIntent().getSerializableExtra("USER ID");
         databaseReference = FirebaseDatabase.getInstance().getReference();
         appointment = findViewById(R.id.appointment);
