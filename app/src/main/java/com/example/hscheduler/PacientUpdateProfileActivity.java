@@ -279,6 +279,8 @@ public class PacientUpdateProfileActivity extends AppCompatActivity {
         profilePacient.put("Prenume", prenumeUser.getText().toString());
         profilePacient.put("Afectiune", spinnerValue);
         profilePacient.put("userID",currentUserID);
+        profilePacient.put("Time Appointment","");
+        profilePacient.put("Date Appointment","");
 
         RootRef.child("Users").child("Pacienti").child(currentUserID).child("New Account?").setValue("old");
         RootRef.child("Users").child("Pacienti").child(currentUserID).updateChildren(profilePacient)
@@ -354,7 +356,9 @@ public class PacientUpdateProfileActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         if (!Objects.requireNonNull(dataSnapshot.child("image").exists())) {
-                            //imageLink = "https://firebasestorage.googleapis.com/v0/b/hschedule-30bca.appspot.com/o/Profile%20Images%2Fprofile_image.png?alt=media&token=fc0afa96-adf8-482e-9f06-31fa75aed377";
+
+                            // imagine default
+                            imageLink = "https://firebasestorage.googleapis.com/v0/b/hschedulerproject.appspot.com/o/Profile%20Images%2Fprofile_image.png?alt=media&token=a3da03b8-9432-406f-ae95-4b685771c009";
                         } else {
                             imageLink = Objects.requireNonNull(dataSnapshot.child("image").getValue()).toString();
                             Picasso.get().load(imageLink).placeholder(R.drawable.profile_image).into(profileImage);

@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,7 +16,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -27,11 +25,12 @@ public class DoctorAdapter extends RecyclerView.Adapter<DoctorAdapter.DoctorView
     private Context context;
     private ArrayList<Doctor> doctorArrayList;
     private FirebaseAuth mAuth ;
-    private String currentUserID;
+    private String currentUserID,pacientID;
 
-    DoctorAdapter(Context context, ArrayList<Doctor> doctors){
+    DoctorAdapter(Context context, ArrayList<Doctor> doctors,String pacientID){
         this.context = context;
         this.doctorArrayList = doctors;
+        this.pacientID = pacientID;
     }
 
     @NonNull
@@ -53,13 +52,6 @@ public class DoctorAdapter extends RecyclerView.Adapter<DoctorAdapter.DoctorView
         currentUserID = doctorArrayList.get(position).getUserID();
         Picasso.get().load(doctorArrayList.get(position).getImage()).into(holder.profileImage);
 
-        holder.appointment.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                SendUserToCalendarActivity();
-            }
-        });
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,15 +62,11 @@ public class DoctorAdapter extends RecyclerView.Adapter<DoctorAdapter.DoctorView
         });
     }
 
-    private void SendUserToCalendarActivity() {
-
-        Intent intent = new Intent(context, CalendarActivity.class);
-        context.startActivity(intent);
-    }
 
     private void SendUserToDoctorProfile(){
         Intent intent = new Intent(context,DoctorProfileActivity.class);
         intent.putExtra("ID",currentUserID);
+        intent.putExtra("USER ID",pacientID);
         context.startActivity(intent);
     }
 
